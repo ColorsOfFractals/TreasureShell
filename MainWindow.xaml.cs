@@ -413,6 +413,25 @@ namespace TreasureShell
             // TREASURESHELL NATIVE COMMANDS
             // =====================================================
 
+            // CLEAR TERMINAL OUTPUT
+
+            if (
+                command.Equals(
+                    "cls",
+                    StringComparison.OrdinalIgnoreCase)
+
+                ||
+
+                command.Equals(
+                    "clear",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                TerminalOutput.Clear();
+
+                CommandInput.Focus();
+
+                return;
+            }
             // WEB OFF
             //
             // Return to normal PowerShell terminal view.
@@ -1797,4 +1816,5 @@ namespace TreasureShell
         }
     }
 }
+
 

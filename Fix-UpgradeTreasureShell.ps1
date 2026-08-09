@@ -1,9 +1,9 @@
-$ErrorActionPreference = "Stop"
+﻿$ErrorActionPreference = "Stop"
 
-$ProjectRoot = $PSScriptRoot
+$PSScriptRoot = $PSScriptRoot
 
 $UpgradeScript =
-    Join-Path $ProjectRoot "Upgrade-TreasureShell.ps1"
+    Join-Path $PSScriptRoot "Upgrade-TreasureShell.ps1"
 
 Write-Host ""
 Write-Host "Dr. Recursion - TreasureShell Upgrade Patcher" -ForegroundColor Magenta
@@ -82,6 +82,67 @@ else {
 }
 
 # ============================================================
+
+# ============================================================
+# DR RECURSION LESSON: TEACH UPGRADE CLS
+# ============================================================
+
+$UpgradeScript = Join-Path $PSScriptRoot "Upgrade-TreasureShell.ps1"
+
+if (-not (Test-Path $UpgradeScript)) {
+    throw "Upgrade-TreasureShell.ps1 was not found."
+}
+
+$UpgradeCode =
+    Get-Content $UpgradeScript -Raw
+
+$UpgradeLessonMarker =
+    "# DR RECURSION LESSON: CLS / CLEAR"
+
+if ($UpgradeCode -notmatch [regex]::Escape($UpgradeLessonMarker)) {
+
+    # This payload is the readable PowerShell lesson that will
+    # be injected into Upgrade-TreasureShell.ps1.
+    #
+    # It teaches the upgrader how to inject the cls / clear
+    # native command into MainWindow.xaml.cs.
+
+    $UpgradePatchB64 =
+"IyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KIyBEUiBSRUNVUlNJT04gTEVTU09OOiBDTFMgLyBDTEVBUgojID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQoKaWYgKCRDb2RlIC1ub3RtYXRjaCAiQ0xFQVIgVEVSTUlOQUwgT1VUUFVUIikgewoKJENsZWFyQ29tbWFuZCA9IEAnCiAgICAgICAgICAgIC8vIENMRUFSIFRFUk1JTkFMIE9VVFBVVAoKICAgICAgICAgICAgaWYgKAogICAgICAgICAgICAgICAgY29tbWFuZC5FcXVhbHMoCiAgICAgICAgICAgICAgICAgICAgImNscyIsCiAgICAgICAgICAgICAgICAgICAgU3RyaW5nQ29tcGFyaXNvbi5PcmRpbmFsSWdub3JlQ2FzZSkKCiAgICAgICAgICAgICAgICB8fAoKICAgICAgICAgICAgICAgIGNvbW1hbmQuRXF1YWxzKAogICAgICAgICAgICAgICAgICAgICJjbGVhciIsCiAgICAgICAgICAgICAgICAgICAgU3RyaW5nQ29tcGFyaXNvbi5PcmRpbmFsSWdub3JlQ2FzZSkpCiAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgIFRlcm1pbmFsT3V0cHV0LkNsZWFyKCk7CgogICAgICAgICAgICAgICAgQ29tbWFuZElucHV0LkZvY3VzKCk7CgogICAgICAgICAgICAgICAgcmV0dXJuOwogICAgICAgICAgICB9CgonQAoKJENsZWFyQW5jaG9yID0gQCcKICAgICAgICAgICAgLy8gV0VCIE9GRgonQAoKICAgIGlmICgtbm90ICRDb2RlLkNvbnRhaW5zKCRDbGVhckFuY2hvcikpIHsKICAgICAgICB0aHJvdyAiQ291bGQgbm90IGZpbmQgdGhlIFdFQiBPRkYgYW5jaG9yIGluIE1haW5XaW5kb3cueGFtbC5jcy4iCiAgICB9CgogICAgJENvZGUgPQogICAgICAgICRDb2RlLlJlcGxhY2UoCiAgICAgICAgICAgICRDbGVhckFuY2hvciwKICAgICAgICAgICAgJENsZWFyQ29tbWFuZCArICRDbGVhckFuY2hvcgogICAgICAgICkKCiAgICBXcml0ZS1Ib3N0ICJVcGdyYWRlIGxlYXJuZWQgaG93IHRvIGFkZCBjbHMgLyBjbGVhci4iIC1Gb3JlZ3JvdW5kQ29sb3IgR3JlZW4KfQplbHNlIHsKICAgIFdyaXRlLUhvc3QgIlRyZWFzdXJlU2hlbGwgYWxyZWFkeSBrbm93cyBjbHMgLyBjbGVhci4iIC1Gb3JlZ3JvdW5kQ29sb3IgWWVsbG93Cn0KCg=="
+
+    $UpgradeLesson =
+        [System.Text.Encoding]::UTF8.GetString(
+            [System.Convert]::FromBase64String(
+                $UpgradePatchB64
+            )
+        )
+
+    $UpgradeAnchor =
+        "# NEW WEB BROWSER BLOCK"
+
+    if (-not $UpgradeCode.Contains($UpgradeAnchor)) {
+        throw "Could not find NEW WEB BROWSER BLOCK in upgrader."
+    }
+
+    $UpgradeCode =
+        $UpgradeCode.Replace(
+            $UpgradeAnchor,
+            $UpgradeLesson +
+            "
+" +
+            $UpgradeAnchor
+        )
+
+    Set-Content -Path $UpgradeScript -Value $UpgradeCode -Encoding utf8
+
+    Write-Host ""
+    Write-Host "Fixer taught the upgrader about cls / clear." -ForegroundColor Green
+}
+else {
+    Write-Host ""
+    Write-Host "Upgrader already contains the cls / clear lesson." -ForegroundColor Yellow
+}
+
 # RUN THE NEWLY PATCHED UPGRADE SCRIPT
 # ============================================================
 
@@ -125,3 +186,11 @@ Write-Host ""
 Write-Host "Then try:"
 Write-Host "  web github.com"
 Write-Host ""
+
+
+
+
+
+
+
+

@@ -163,6 +163,56 @@ $NavigationCommands = @'
 }
 
 # ============================================================
+# ============================================================
+# DR RECURSION LESSON: CLS / CLEAR
+# ============================================================
+
+if ($Code -notmatch "CLEAR TERMINAL OUTPUT") {
+
+$ClearCommand = @'
+            // CLEAR TERMINAL OUTPUT
+
+            if (
+                command.Equals(
+                    "cls",
+                    StringComparison.OrdinalIgnoreCase)
+
+                ||
+
+                command.Equals(
+                    "clear",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                TerminalOutput.Clear();
+
+                CommandInput.Focus();
+
+                return;
+            }
+
+'@
+
+$ClearAnchor = @'
+            // WEB OFF
+'@
+
+    if (-not $Code.Contains($ClearAnchor)) {
+        throw "Could not find the WEB OFF anchor in MainWindow.xaml.cs."
+    }
+
+    $Code =
+        $Code.Replace(
+            $ClearAnchor,
+            $ClearCommand + $ClearAnchor
+        )
+
+    Write-Host "Upgrade learned how to add cls / clear." -ForegroundColor Green
+}
+else {
+    Write-Host "TreasureShell already knows cls / clear." -ForegroundColor Yellow
+}
+
+
 # NEW WEB BROWSER BLOCK
 # ============================================================
 
@@ -951,3 +1001,4 @@ Write-Host "  back"
 Write-Host "  reload"
 Write-Host "  web off"
 Write-Host ""
+
