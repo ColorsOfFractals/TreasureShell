@@ -1,0 +1,870 @@
+﻿<Window x:Class="TreasureShell.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        Title="TreasureShell"
+        Width="900"
+        Height="600"
+        MinWidth="640"
+        MinHeight="420"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="CanResize"
+        AllowsTransparency="True"
+        Background="Transparent"
+        SnapsToDevicePixels="True"
+        UseLayoutRounding="True">
+
+    <!-- ========================================================= -->
+    <!-- SHARED VISUAL LANGUAGE                                    -->
+    <!-- ========================================================= -->
+
+    <Window.Resources>
+
+        <!-- Gold -->
+        <LinearGradientBrush x:Key="GoldBrush"
+                             StartPoint="0,0"
+                             EndPoint="0,1">
+            <GradientStop Color="#FFF9DB8A" Offset="0"/>
+            <GradientStop Color="#FFF0B841" Offset="0.45"/>
+            <GradientStop Color="#FFB87520" Offset="1"/>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="GoldDarkBrush"
+                             StartPoint="0,0"
+                             EndPoint="0,1">
+            <GradientStop Color="#FFD9A53A" Offset="0"/>
+            <GradientStop Color="#FF865018" Offset="1"/>
+        </LinearGradientBrush>
+
+        <!-- Walnut -->
+        <LinearGradientBrush x:Key="WalnutBrush"
+                             StartPoint="0,0"
+                             EndPoint="1,1">
+            <GradientStop Color="#FF945631" Offset="0"/>
+            <GradientStop Color="#FF67371F" Offset="0.48"/>
+            <GradientStop Color="#FF402014" Offset="1"/>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="WalnutLightBrush"
+                             StartPoint="0,0"
+                             EndPoint="0,1">
+            <GradientStop Color="#FFAC693E" Offset="0"/>
+            <GradientStop Color="#FF7E4528" Offset="0.55"/>
+            <GradientStop Color="#FF52291A" Offset="1"/>
+        </LinearGradientBrush>
+
+        <!-- Terminal -->
+        <LinearGradientBrush x:Key="ShellTitleBrush"
+                             StartPoint="0,0"
+                             EndPoint="0,1">
+            <GradientStop Color="#FF402719" Offset="0"/>
+            <GradientStop Color="#FF28170F" Offset="1"/>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="ShellSurfaceBrush"
+                             StartPoint="0,0"
+                             EndPoint="0,1">
+            <GradientStop Color="#FF11110F" Offset="0"/>
+            <GradientStop Color="#FF080908" Offset="1"/>
+        </LinearGradientBrush>
+
+        <!-- ========================================================= -->
+        <!-- TREASURESHELL SCROLLBARS                                  -->
+        <!-- ========================================================= -->
+
+        <Style TargetType="{x:Type RepeatButton}">
+            <Setter Property="Background" Value="#16000000"/>
+            <Setter Property="Foreground" Value="#FFFFC84F"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <!-- Window buttons -->
+        <Style x:Key="ChromeButtonStyle"
+               TargetType="Button">
+
+            <Setter Property="Width" Value="34"/>
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="Foreground" Value="#FFF1BF51"/>
+            <Setter Property="Background" Value="#241B120D"/>
+            <Setter Property="BorderBrush" Value="#667A5221"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontFamily" Value="Segoe UI Variable, Segoe UI"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+
+                    <ControlTemplate TargetType="Button">
+
+                        <Border x:Name="ButtonSurface"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+
+                                <Setter TargetName="ButtonSurface"
+                                        Property="Background"
+                                        Value="#50402816"/>
+
+                                <Setter TargetName="ButtonSurface"
+                                        Property="BorderBrush"
+                                        Value="#D7B26A2F"/>
+
+                                <Setter Property="Foreground"
+                                        Value="#FFFFDA79"/>
+
+                            </Trigger>
+
+                            <Trigger Property="IsPressed"
+                                     Value="True">
+
+                                <Setter TargetName="ButtonSurface"
+                                        Property="Background"
+                                        Value="#8060381A"/>
+
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+
+                </Setter.Value>
+            </Setter>
+
+        </Style>
+
+    </Window.Resources>
+
+    <!-- ========================================================= -->
+    <!-- ROOT                                                      -->
+    <!-- ========================================================= -->
+
+    <Grid>
+
+        <!-- ===================================================== -->
+        <!-- TREASURE CHEST                                       -->
+        <!-- ===================================================== -->
+
+        <Grid x:Name="Chest"
+              Width="570"
+              Height="390"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Cursor="Hand"
+              RenderTransformOrigin="0.5,0.5"
+              MouseLeftButtonDown="Chest_MouseLeftButtonDown">
+
+            <Grid.RenderTransform>
+                <ScaleTransform x:Name="ChestScale"
+                                ScaleX="1"
+                                ScaleY="1"/>
+            </Grid.RenderTransform>
+
+            <!-- Floor shadow -->
+            <Ellipse Width="500"
+                     Height="95"
+                     VerticalAlignment="Bottom"
+                     Margin="0,0,0,5"
+                     Opacity="0.50"
+                     IsHitTestVisible="False">
+
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#B0000000" Offset="0"/>
+                        <GradientStop Color="#65000000" Offset="0.5"/>
+                        <GradientStop Color="#00000000" Offset="1"/>
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+
+                <Ellipse.Effect>
+                    <BlurEffect Radius="22"/>
+                </Ellipse.Effect>
+
+            </Ellipse>
+
+            <!-- Warm backlight -->
+            <Ellipse Width="430"
+                     Height="240"
+                     VerticalAlignment="Center"
+                     Opacity="0.18"
+                     IsHitTestVisible="False">
+
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#FFFFC650" Offset="0"/>
+                        <GradientStop Color="#55D18B25" Offset="0.48"/>
+                        <GradientStop Color="#00D18B25" Offset="1"/>
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+
+            </Ellipse>
+
+            <!-- ================================================= -->
+            <!-- CHEST LID                                        -->
+            <!-- ================================================= -->
+
+            <Grid x:Name="ChestLid"
+                  Width="520"
+                  Height="160"
+                  VerticalAlignment="Top"
+                  HorizontalAlignment="Center"
+                  Margin="0,18,0,0"
+                  RenderTransformOrigin="0.5,1">
+
+                <Grid.RenderTransform>
+
+                    <TransformGroup>
+
+                        <ScaleTransform x:Name="LidScale"
+                                        ScaleX="1"
+                                        ScaleY="1"/>
+
+                        <TranslateTransform x:Name="LidTranslate"
+                                            Y="0"/>
+
+                    </TransformGroup>
+
+                </Grid.RenderTransform>
+
+                <!-- Lid shadow -->
+                <Border Margin="7,10,-7,-10"
+                        Background="#99000000"
+                        CornerRadius="52,52,12,12">
+
+                    <Border.Effect>
+                        <BlurEffect Radius="14"/>
+                    </Border.Effect>
+
+                </Border>
+
+                <!-- Main lid -->
+                <Border Background="{StaticResource WalnutLightBrush}"
+                        BorderBrush="{StaticResource GoldBrush}"
+                        BorderThickness="5"
+                        CornerRadius="52,52,12,12">
+
+                    <Grid>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Wood depth -->
+                        <Rectangle Grid.Row="0"
+                                   Fill="#18FFFFFF"/>
+
+                        <Rectangle Grid.Row="1"
+                                   Fill="#0D000000"/>
+
+                        <Rectangle Grid.Row="2"
+                                   Fill="#16000000"/>
+
+                        <!-- Wood grain -->
+                        <Rectangle Grid.Row="1"
+                                   Height="1"
+                                   Fill="#40401D12"
+                                   VerticalAlignment="Top"/>
+
+                        <Rectangle Grid.Row="2"
+                                   Height="1"
+                                   Fill="#40321810"
+                                   VerticalAlignment="Top"/>
+
+                        <!-- Brass straps -->
+                        <Border Width="42"
+                                HorizontalAlignment="Left"
+                                Margin="88,0,0,0"
+                                Background="{StaticResource GoldBrush}">
+
+                            <Border.Effect>
+                                <DropShadowEffect
+                                    BlurRadius="5"
+                                    ShadowDepth="1"
+                                    Opacity="0.30"
+                                    Color="#000000"/>
+                            </Border.Effect>
+
+                        </Border>
+
+                        <Border Width="42"
+                                HorizontalAlignment="Right"
+                                Margin="0,0,88,0"
+                                Background="{StaticResource GoldBrush}"/>
+
+                        <!-- Strap highlights -->
+                        <Rectangle Width="2"
+                                   Fill="#55FFFFFF"
+                                   HorizontalAlignment="Left"
+                                   Margin="92,0,0,0"/>
+
+                        <Rectangle Width="2"
+                                   Fill="#55FFFFFF"
+                                   HorizontalAlignment="Right"
+                                   Margin="0,0,124,0"/>
+
+                        <!-- Bottom brass rail -->
+                        <Border Height="24"
+                                VerticalAlignment="Bottom"
+                                Background="{StaticResource GoldBrush}">
+
+                            <Border.Effect>
+                                <DropShadowEffect
+                                    BlurRadius="6"
+                                    ShadowDepth="2"
+                                    Opacity="0.35"
+                                    Color="#000000"/>
+                            </Border.Effect>
+
+                        </Border>
+
+                        <!-- Top highlight -->
+                        <Border Height="2"
+                                VerticalAlignment="Top"
+                                Margin="26,8"
+                                Background="#66FFE8A8"
+                                CornerRadius="2"/>
+
+                    </Grid>
+
+                </Border>
+
+            </Grid>
+
+            <!-- ================================================= -->
+            <!-- CHEST BODY                                       -->
+            <!-- ================================================= -->
+
+            <Grid x:Name="ChestBody"
+                  Width="520"
+                  Height="230"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Bottom"
+                  Margin="0,0,0,24">
+
+                <!-- Body shadow -->
+                <Border Margin="8,12,-8,-12"
+                        Background="#A0000000"
+                        CornerRadius="12,12,42,42">
+
+                    <Border.Effect>
+                        <BlurEffect Radius="16"/>
+                    </Border.Effect>
+
+                </Border>
+
+                <!-- Body surface -->
+                <Border Background="{StaticResource WalnutBrush}"
+                        BorderBrush="{StaticResource GoldBrush}"
+                        BorderThickness="5"
+                        CornerRadius="12,12,42,42">
+
+                    <Grid>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <Rectangle Grid.Row="0"
+                                   Fill="#12FFFFFF"/>
+
+                        <Rectangle Grid.Row="1"
+                                   Fill="#12000000"/>
+
+                        <Rectangle Grid.Row="2"
+                                   Fill="#1C000000"/>
+
+                        <!-- Wood separators -->
+                        <Rectangle Grid.Row="1"
+                                   Height="1"
+                                   Fill="#55321811"
+                                   VerticalAlignment="Top"/>
+
+                        <Rectangle Grid.Row="2"
+                                   Height="1"
+                                   Fill="#55321811"
+                                   VerticalAlignment="Top"/>
+
+                        <!-- Brass straps -->
+                        <Rectangle Width="42"
+                                   HorizontalAlignment="Left"
+                                   Margin="88,0,0,0"
+                                   Fill="{StaticResource GoldBrush}"/>
+
+                        <Rectangle Width="42"
+                                   HorizontalAlignment="Right"
+                                   Margin="0,0,88,0"
+                                   Fill="{StaticResource GoldBrush}"/>
+
+                        <!-- Top brass rail -->
+                        <Border Height="27"
+                                VerticalAlignment="Top"
+                                Background="{StaticResource GoldBrush}">
+
+                            <Border.Effect>
+                                <DropShadowEffect
+                                    BlurRadius="4"
+                                    ShadowDepth="2"
+                                    Opacity="0.30"/>
+                            </Border.Effect>
+
+                        </Border>
+
+                        <!-- Bottom bevel -->
+                        <Border Height="2"
+                                VerticalAlignment="Bottom"
+                                Margin="20,0,20,12"
+                                Background="#33FFE2A0"
+                                CornerRadius="2"/>
+
+                    </Grid>
+
+                </Border>
+
+                <!-- ================================================= -->
+                <!-- LOCK                                              -->
+                <!-- ================================================= -->
+
+                <Grid Width="104"
+                      Height="120"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Top"
+                      Margin="0,-18,0,0">
+
+                    <!-- Lock shadow -->
+                    <Border Margin="5,7,-5,-7"
+                            Background="#99000000"
+                            CornerRadius="17">
+
+                        <Border.Effect>
+                            <BlurEffect Radius="10"/>
+                        </Border.Effect>
+
+                    </Border>
+
+                    <!-- Lock plate -->
+                    <Border Background="#FF26170F"
+                            BorderBrush="{StaticResource GoldBrush}"
+                            BorderThickness="5"
+                            CornerRadius="17">
+
+                        <Grid>
+
+                            <Rectangle Margin="7"
+                                       RadiusX="10"
+                                       RadiusY="10">
+
+                                <Rectangle.Fill>
+
+                                    <LinearGradientBrush
+                                        StartPoint="0,0"
+                                        EndPoint="1,1">
+
+                                        <GradientStop Color="#553B291D"
+                                                      Offset="0"/>
+
+                                        <GradientStop Color="#11201711"
+                                                      Offset="1"/>
+
+                                    </LinearGradientBrush>
+
+                                </Rectangle.Fill>
+
+                            </Rectangle>
+
+                            <!-- Glow -->
+                            <Ellipse Width="42"
+                                     Height="42"
+                                     Fill="#30FFB62E"
+                                     VerticalAlignment="Center"
+                                     Margin="0,-22,0,0">
+
+                                <Ellipse.Effect>
+                                    <BlurEffect Radius="15"/>
+                                </Ellipse.Effect>
+
+                            </Ellipse>
+
+                            <!-- Keyhole head -->
+                            <Ellipse Width="25"
+                                     Height="25"
+                                     Fill="{StaticResource GoldBrush}"
+                                     VerticalAlignment="Center"
+                                     Margin="0,-22,0,0"/>
+
+                            <!-- Keyhole stem -->
+                            <Rectangle Width="10"
+                                       Height="36"
+                                       RadiusX="3"
+                                       RadiusY="3"
+                                       Fill="{StaticResource GoldBrush}"
+                                       VerticalAlignment="Center"
+                                       Margin="0,24,0,0"/>
+
+                        </Grid>
+
+                    </Border>
+
+                </Grid>
+
+            </Grid>
+
+            <!-- Splash label -->
+            <Border VerticalAlignment="Bottom"
+                    HorizontalAlignment="Center"
+                    Margin="0,0,0,-12"
+                    Padding="16,8"
+                    CornerRadius="10"
+                    Background="#55000000">
+
+                <TextBlock x:Name="HintText"
+                           Text="click to unlock"
+                           Foreground="#B8D8A354"
+                           FontFamily="Segoe UI Variable, Segoe UI"
+                           FontWeight="SemiBold"
+                           FontSize="13"/>
+
+            </Border>
+
+        </Grid>
+
+        <!-- ===================================================== -->
+        <!-- TREASURESHELL WINDOW                                 -->
+        <!-- ===================================================== -->
+
+        <Border x:Name="TerminalPanel"
+                Margin="0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Background="{StaticResource ShellSurfaceBrush}"
+                BorderBrush="#B78D622A"
+                BorderThickness="2"
+                CornerRadius="26"
+                Opacity="0"
+                RenderTransformOrigin="0.5,0.5">
+
+            <Border.RenderTransform>
+
+                <ScaleTransform x:Name="TerminalScale"
+                                ScaleX="0.20"
+                                ScaleY="0.20"/>
+
+            </Border.RenderTransform>
+
+            <!-- Inner gold edge -->
+            <Border BorderBrush="#22FFD475"
+                    BorderThickness="1"
+                    CornerRadius="24">
+
+                <Grid>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="62"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <!-- ========================================= -->
+                    <!-- TITLE BAR                                 -->
+                    <!-- ========================================= -->
+
+                    <Border Grid.Row="0"
+                            Background="{StaticResource ShellTitleBrush}"
+                            CornerRadius="24,24,0,0"
+                            MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Branding -->
+                            <StackPanel Grid.Column="0"
+                                        Orientation="Horizontal"
+                                        VerticalAlignment="Center"
+                                        Margin="24,0,0,0">
+
+                                <Border Width="30"
+                                        Height="30"
+                                        Background="#261B110C"
+                                        BorderBrush="#99744720"
+                                        BorderThickness="1"
+                                        CornerRadius="9"
+                                        Margin="0,0,13,0">
+
+                                    <TextBlock Text="◆"
+                                               Foreground="#FFF3C75C"
+                                               FontSize="13"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+
+                                </Border>
+
+                                <StackPanel VerticalAlignment="Center">
+
+                                    <TextBlock Text="TreasureShell"
+                                               Foreground="#FFF4CD71"
+                                               FontFamily="Segoe UI Variable Display, Segoe UI"
+                                               FontWeight="SemiBold"
+                                               FontSize="17"/>
+
+                                    <TextBlock Text="POWERSHELL WORKSPACE"
+                                               Foreground="#887C5D35"
+                                               FontFamily="Segoe UI Variable, Segoe UI"
+                                               FontWeight="SemiBold"
+                                               FontSize="8"/>
+
+                                </StackPanel>
+
+                            </StackPanel>
+
+                            <!-- Window controls -->
+                            <StackPanel Grid.Column="1"
+                                        Orientation="Horizontal"
+                                        VerticalAlignment="Center"
+                                        Margin="0,0,16,0">
+
+                                <Button Style="{StaticResource ChromeButtonStyle}"
+                                        Content="—"
+                                        Click="MinimizeButton_Click"/>
+
+                                <Button x:Name="MaximizeButton"
+                                        Style="{StaticResource ChromeButtonStyle}"
+                                        Content="□"
+                                        Click="MaximizeButton_Click"/>
+
+                                <Button Style="{StaticResource ChromeButtonStyle}"
+                                        Content="×"
+                                        FontSize="17"
+                                        Click="CloseButton_Click"/>
+
+                            </StackPanel>
+
+                        </Grid>
+
+                    </Border>
+
+                    <!-- ========================================= -->
+                    <!-- TERMINAL BODY                             -->
+                    <!-- ========================================= -->
+
+                    <Border Grid.Row="1"
+                            Background="#FF0A0B0B"
+                            CornerRadius="0,0,24,24">
+
+                        <Grid>
+
+                            <!-- Subtle top illumination -->
+                            <Rectangle Height="110"
+                                       VerticalAlignment="Top"
+                                       IsHitTestVisible="False">
+
+                                <Rectangle.Fill>
+
+                                    <LinearGradientBrush
+                                        StartPoint="0,0"
+                                        EndPoint="0,1">
+
+                                        <GradientStop Color="#181F160D"
+                                                      Offset="0"/>
+
+                                        <GradientStop Color="#000A0B0B"
+                                                      Offset="1"/>
+
+                                    </LinearGradientBrush>
+
+                                </Rectangle.Fill>
+
+                            </Rectangle>
+
+                            <!-- Ambient amber glow -->
+                            <Ellipse Width="850"
+                                     Height="500"
+                                     HorizontalAlignment="Left"
+                                     VerticalAlignment="Top"
+                                     Margin="-350,-280,0,0"
+                                     Opacity="0.10"
+                                     IsHitTestVisible="False">
+
+                                <Ellipse.Fill>
+
+                                    <RadialGradientBrush>
+
+                                        <GradientStop Color="#FFFFBE48"
+                                                      Offset="0"/>
+
+                                        <GradientStop Color="#00FFBE48"
+                                                      Offset="1"/>
+
+                                    </RadialGradientBrush>
+
+                                </Ellipse.Fill>
+
+                            </Ellipse>
+
+                            <!-- Actual console -->
+                            <Grid Margin="30,26,30,26">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- OUTPUT -->
+                            <ScrollViewer x:Name="OutputScroller"
+                                        Grid.Row="1"
+                                        VerticalScrollBarVisibility="Hidden"
+                                        HorizontalScrollBarVisibility="Hidden"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Focusable="False"
+                                        FocusVisualStyle="{x:Null}">
+
+                                <TextBox x:Name="TerminalOutput"
+                                        Background="Transparent"
+                                        Foreground="#FFF0BF4F"
+                                        BorderThickness="0"
+                                        Focusable="False"
+                                        IsTabStop="False"
+                                        FocusVisualStyle="{x:Null}"
+                                        FontFamily="Cascadia Mono, Cascadia Code, Consolas"
+                                        FontSize="15"
+                                        FontWeight="Medium"
+                                        IsReadOnly="True"
+                                        TextWrapping="NoWrap"
+                                        AcceptsReturn="True"
+                                        Padding="0"
+                                        VerticalScrollBarVisibility="Hidden"
+                                        HorizontalScrollBarVisibility="Hidden"
+                                        SelectionBrush="#806A4C1C"
+                                        SelectionOpacity="0.80"/>
+
+                            </ScrollViewer>
+
+                            <!-- WEB VIEW -->
+                            <FlowDocumentScrollViewer
+                                x:Name="WebViewer"
+                                Grid.Row="1"
+                                Visibility="Collapsed"
+                                Background="Transparent"
+                                VerticalScrollBarVisibility="Auto"
+                                HorizontalScrollBarVisibility="Disabled">
+
+                                <FlowDocument
+                                    x:Name="WebDocument"
+                                    Background="Transparent"
+                                    Foreground="#FFF0BF4F"
+                                    FontFamily="Cascadia Mono, Cascadia Code, Consolas"
+                                    FontSize="15"
+                                    PagePadding="0"/>
+
+                            </FlowDocumentScrollViewer>
+
+                    <StackPanel x:Name="WelcomePanel"
+                                Grid.Row="0"
+                                HorizontalAlignment="Left"
+                                Margin="36,28,0,20">
+
+                    <Image Source="Assets/TreasureShell.png"
+                        Width="220"
+                        Height="160"
+                        Stretch="Uniform"
+                        RenderOptions.BitmapScalingMode="HighQuality"
+                        SnapsToDevicePixels="True"
+                        UseLayoutRounding="True"
+                        HorizontalAlignment="Center"/>
+
+                    <TextBlock Text="TREASURE SHELL"
+                            Foreground="{StaticResource GoldBrush}"
+                            FontFamily="Cascadia Mono"
+                            FontWeight="Bold"
+                            FontSize="20"
+                            HorizontalAlignment="Center"
+                            Margin="0,10,0,0"/>
+
+                    <TextBlock Text="PowerShell connected."
+                            Foreground="{StaticResource GoldBrush}"
+                            FontFamily="Cascadia Mono"
+                            FontWeight="Bold"
+                            FontSize="16"
+                            HorizontalAlignment="Center"/>
+
+                    </StackPanel>
+
+                                <!-- COMMAND BAR -->
+                                <Border Grid.Row="2"
+                                        Margin="0,17,0,0"
+                                        Padding="15,11"
+                                        Background="#B80E0E0D"
+                                        BorderBrush="#3A9A6E28"
+                                        BorderThickness="1"
+                                        CornerRadius="12">
+
+                                    <Grid>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock x:Name="PromptText"
+                                                   Grid.Column="0"
+                                                   Text="PS > "
+                                                   Foreground="#FFFFC84F"
+                                                   FontFamily="Cascadia Mono, Cascadia Code, Consolas"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   VerticalAlignment="Center"/>
+
+                                        <TextBox x:Name="CommandInput"
+                                                 Grid.Column="1"
+                                                 Margin="3,0,0,0"
+                                                 Background="Transparent"
+                                                 Foreground="#FFFFC84F"
+                                                 CaretBrush="#FFFFD777"
+                                                 BorderThickness="0"
+                                                 FontFamily="Cascadia Mono, Cascadia Code, Consolas"
+                                                 FontSize="15"
+                                                 FontWeight="SemiBold"
+                                                 VerticalContentAlignment="Center"
+                                                 KeyDown="CommandInput_KeyDown"/>
+
+                                    </Grid>
+
+                                </Border>
+
+                            </Grid>
+
+                        </Grid>
+
+                    </Border>
+
+                </Grid>
+
+            </Border>
+
+        </Border>
+
+    </Grid>
+
+</Window>
