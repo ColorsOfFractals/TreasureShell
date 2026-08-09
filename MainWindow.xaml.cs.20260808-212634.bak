@@ -770,7 +770,7 @@ namespace TreasureShell
             Uri baseUri)
         {
             var document =
-                new HtmlAgilityPack.HtmlDocument();
+                new HtmlDocument();
 
             document.LoadHtml(html);
 
@@ -1797,4 +1797,3 @@ namespace TreasureShell
         }
     }
 }
-
