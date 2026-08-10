@@ -7,3 +7,5 @@ obj/
 *.bak
 
 *.bak
+
+Installer/Output/
