@@ -102,24 +102,49 @@ dotnet --list-sdks |
 # NUGET.ORG
 # ------------------------------------------------------------
 
-$NuGetSources = (dotnet nuget list source 2>$null) -join "`n"
+Write-Host "[CHECK] nuget.org" -ForegroundColor Cyan
 
-if ($NuGetSources -notmatch 'nuget\.org') {
+$PreviousErrorActionPreference = $ErrorActionPreference
+$ErrorActionPreference = "Continue"
+
+$NuGetSources = @()
+
+try {
+    $NuGetSources = @(dotnet nuget list source 2>&1)
+}
+catch {
+    $NuGetSources = @()
+}
+
+$ErrorActionPreference = $PreviousErrorActionPreference
+
+$NuGetText = $NuGetSources -join "`n"
+
+if ($NuGetText -notmatch 'nuget\.org') {
 
     Write-Host "[CONFIGURE] nuget.org" -ForegroundColor Yellow
 
-    dotnet nuget add source `
-        https://api.nuget.org/v3/index.json `
-        --name nuget.org
+    dotnet nuget add source https://api.nuget.org/v3/index.json --name nuget.org
 
     if ($LASTEXITCODE -ne 0) {
         throw "Unable to add nuget.org."
     }
 }
 
-$NuGetSources = (dotnet nuget list source 2>$null) -join "`n"
+$PreviousErrorActionPreference = $ErrorActionPreference
+$ErrorActionPreference = "Continue"
 
-if ($NuGetSources -match '(?s)nuget\.org.*?\[Disabled\]') {
+$VerifiedNuGetSources = @(dotnet nuget list source 2>&1)
+
+$ErrorActionPreference = $PreviousErrorActionPreference
+
+$VerifiedNuGetText = $VerifiedNuGetSources -join "`n"
+
+if ($VerifiedNuGetText -notmatch 'nuget\.org') {
+    throw "nuget.org verification failed."
+}
+
+if ($VerifiedNuGetText -match '(?s)nuget\.org.*?\[Disabled\]') {
 
     Write-Host "[ENABLE] nuget.org" -ForegroundColor Yellow
 
@@ -130,15 +155,7 @@ if ($NuGetSources -match '(?s)nuget\.org.*?\[Disabled\]') {
     }
 }
 
-$NuGetSources = (dotnet nuget list source 2>$null) -join "`n"
-
-if ($NuGetSources -notmatch 'nuget\.org') {
-    throw "nuget.org verification failed."
-}
-
 Write-Host "[OK] nuget.org" -ForegroundColor Green
-
-
 # ------------------------------------------------------------
 # INNO SETUP 7
 # ------------------------------------------------------------
@@ -188,6 +205,23 @@ if (-not $ISCC) {
 Write-Host "[OK] Inno Setup 7" -ForegroundColor Green
 Write-Host "     $ISCC"
 
+
+# ------------------------------------------------------------
+# FINAL HUMAN CHECKPOINT
+# ------------------------------------------------------------
+
+Write-Host ""
+Write-Host "==============================================" -ForegroundColor Magenta
+Write-Host " One Final Checkpoint" -ForegroundColor Magenta
+Write-Host "==============================================" -ForegroundColor Magenta
+Write-Host ""
+Write-Host "Everything TreasureShell needs is ready." -ForegroundColor Green
+Write-Host ""
+Write-Host "Press Enter to build the TreasureShell" -ForegroundColor Cyan
+Write-Host "Windows installer. 🌀" -ForegroundColor Magenta
+Write-Host ""
+
+Read-Host | Out-Null
 
 # ------------------------------------------------------------
 # BUILD TREASURESHELL
@@ -275,5 +309,20 @@ Write-Host ""
 Write-Host "Installer:" -ForegroundColor Cyan
 Write-Host "  $($Installer.FullName)"
 Write-Host ""
+Write-Host "==============================================" -ForegroundColor Green
+Write-Host " TreasureShell Installer Ready" -ForegroundColor Green
+Write-Host "==============================================" -ForegroundColor Green
+Write-Host ""
+Write-Host "The spiral is complete. 🌀" -ForegroundColor Magenta
+Write-Host ""
+Write-Host "Press Enter to launch the TreasureShell installer." -ForegroundColor Cyan
+Write-Host ""
+
+Read-Host | Out-Null
+
+Start-Process $Installer.FullName
+
+Write-Host ""
+
 
 
