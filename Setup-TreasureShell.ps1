@@ -1,4 +1,29 @@
-﻿$ErrorActionPreference = "Stop"
+﻿# TREASURESHELL_PORTABLE_PREFLIGHT
+# Fresh-PC validation discovered during cross-machine deployment testing.
+
+$TreasureShellSdk10 = $false
+
+if (Get-Command dotnet -ErrorAction SilentlyContinue) {
+    $TreasureShellInstalledSdks = @(dotnet --list-sdks 2>$null)
+
+    if ($TreasureShellInstalledSdks | Select-String '^10\.') {
+        $TreasureShellSdk10 = $true
+    }
+}
+
+if (-not $TreasureShellSdk10) {
+    throw ".NET 10 SDK is required. Run Bootstrap-TreasureShell.ps1 first."
+}
+
+$TreasureShellNuGetSources = (dotnet nuget list source 2>$null) -join "`n"
+
+if ($TreasureShellNuGetSources -notmatch 'nuget\.org') {
+    throw "nuget.org is not configured. Run Bootstrap-TreasureShell.ps1 first."
+}
+
+# END TREASURESHELL_PORTABLE_PREFLIGHT
+
+$ErrorActionPreference = "Stop"
 $Root = $PSScriptRoot
 
 Write-Host ""
@@ -41,3 +66,4 @@ if ($LASTEXITCODE -ne 0) { throw "dotnet publish failed." }
 Write-Host ""
 Write-Host "TreasureShell ready." -ForegroundColor Green
 Write-Host "$Root\bin\Release\net10.0-windows\win-x64\publish\TreasureShell.exe"
+

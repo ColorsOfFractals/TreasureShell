@@ -1,4 +1,20 @@
-﻿$ErrorActionPreference = "Stop"
+﻿# TREASURESHELL_PORTABILITY_NOTE
+#
+# Fresh-PC deployment was independently verified on another Windows PC.
+#
+# Bootstrap-TreasureShell.ps1 owns machine prerequisites:
+#   - Git
+#   - .NET 10 SDK
+#   - nuget.org
+#   - Inno Setup 7
+#
+# Setup-TreasureShell.ps1 owns restore/build/publish.
+# Installer\TreasureShell.iss owns Windows packaging.
+#
+# Preserve this separation when modifying upgrade behavior.
+# END TREASURESHELL_PORTABILITY_NOTE
+
+$ErrorActionPreference = "Stop"
 
 $ProjectRoot = $PSScriptRoot
 $CsFile = Join-Path $ProjectRoot "MainWindow.xaml.cs"
@@ -1001,4 +1017,5 @@ Write-Host "  back"
 Write-Host "  reload"
 Write-Host "  web off"
 Write-Host ""
+
 
