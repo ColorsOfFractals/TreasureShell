@@ -93,3 +93,17 @@ Installer\Output\
 
 The repository carries the reproducible build recipe rather than copies of the SDK or Inno Setup binaries.
 
+
+<!-- TREASURESHELL_PUBLIC_INSTALLER -->
+
+## Public Installer
+
+TreasureShell is published as a self-contained Windows x64 application.
+
+End users do not need the .NET SDK, Git, NuGet, PowerShell build tooling, or Inno Setup.
+
+Public distribution artifact:
+
+TreasureShell-Setup.exe
+
+The repository bootstrap and build scripts remain developer tooling used to forge the installer.
